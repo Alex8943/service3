@@ -1,6 +1,13 @@
 import amqp, { Channel, Connection } from "amqplib";
+import dotenv from "dotenv";
 
-const RABBITMQ_URL = "amqp://localhost"; // Update if RabbitMQ is hosted remotely
+dotenv.config();
+
+const LOCAL_RABBITMQ_URL = process.env.rabbitmq_url || "amqp://localhost"; 
+if(!LOCAL_RABBITMQ_URL) {
+  throw new Error("RabbitMQ URL is not provided");
+}
+
 let connection: Connection | null = null;
 let channel: Channel | null = null;
 
@@ -9,7 +16,7 @@ let channel: Channel | null = null;
  */
 export async function createChannel(): Promise<{ channel: Channel; connection: Connection }> {
     if (!connection) {
-        connection = await amqp.connect(RABBITMQ_URL);
+        connection = await amqp.connect(LOCAL_RABBITMQ_URL);
         console.log("RabbitMQ connection established.");
     }
     if (!channel) {
