@@ -3,13 +3,14 @@ import { Review as Reviews, User, Media, Genre, ReviewGenres } from "../other_se
 import logger from "../other_services/winstonLogger";
 import {fetchDataFromQueue, createChannel } from "../other_services/rabbitMQ";
 import { Op } from "sequelize";
+import verifyUser from "./authenticateUser";
 
 const router = express.Router();
 
 
 
 // Route to search for a review by title
-router.get("/review/:title", async (req, res) => {
+router.get("/review/:title", verifyUser, async (req, res) => {
     
     try {
         // Access title from req.params instead of req.body
